@@ -10,14 +10,24 @@ export default function Podcast() {
   //podcast detail content
   const [podcast, setPodcast] = useState(null);
   const [isSearch, setIsSearch] = useState(false);
-
+  
+  //query recommend
+  const [queryRecommend, setQueryRecommend] = useState(null);
   useEffect(() => {
     async function fetchPodcast() {
       const response = await fetch(`http://localhost:5000/podcast?pid=${pid}`);
       const data = await response.json();
       setPodcast(data);
     }
+
+    async function fetchQuery() {
+      const response = await fetch(`http://localhost:5000/queries?pid=${pid}`);
+      const data = await response.json();
+      setQueryRecommend(data);
+    }
+
     fetchPodcast();
+    fetchQuery();
   }, [pid]);
 
   //topsegments
@@ -114,6 +124,14 @@ export default function Podcast() {
           </button> */}
         </div>
       </div>
+      <div className="mx-36">
+        <p className="font-bold">Query recommend : </p>
+      {queryRecommend && queryRecommend.queries.map((item)=>(
+        <p className="text-yellow-600">{item}</p>
+      ))}
+
+      </div>
+
       <div className="mx-36">
         <p className="font-bold">Top span : </p>
       {span && span.map((item)=>(
