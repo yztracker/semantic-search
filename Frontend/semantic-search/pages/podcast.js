@@ -167,14 +167,23 @@ export default function Podcast() {
       </ul>
 
       <ul className="px-36">
-        {podcast &&
-          podcast.podcast.map((item, index) => (
-            <li className="text-lg" key={index}>
-              <p >{item}</p>
-            </li>
-          ))}
+        {segment &&
+          podcast &&
+          podcast.podcast.map((item, index) => {
+            let highlightedText = item;
+            segment.top_segments.map((segment, i) => {
+              highlightedText = highlightedText.replace(
+                new RegExp(segment[0], "gi"),
+                "<span class='highlighted'>" + segment[0] + "</span>"
+              );
+            });
+            return (
+              <li className="text-lg" key={index}>
+                <p dangerouslySetInnerHTML={{ __html: highlightedText }} />
+              </li>
+            );
+          })}
       </ul>
     </div>
   );
 }
-
