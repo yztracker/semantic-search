@@ -10,7 +10,7 @@ export default function Podcast() {
   //podcast detail content
   const [podcast, setPodcast] = useState(null);
   const [isSearch, setIsSearch] = useState(false);
-  
+
   //query recommend
   const [queryRecommend, setQueryRecommend] = useState(null);
   useEffect(() => {
@@ -45,27 +45,26 @@ export default function Podcast() {
         setSegment(json);
 
         let requestSpan = {
-            query:query,
-            n:parseInt(n),
-            segment:json.top_segments[0][0]
-        }
-        fetch(`http://localhost:5000/topspans`,{
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(requestSpan),
-      
+          query: query,
+          n: parseInt(n),
+          segment: json.top_segments[0][0],
+        };
+        fetch(`http://localhost:5000/topspans`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(requestSpan),
         })
-        .then((response) => response.json())
-        .then((json) => {
+          .then((response) => response.json())
+          .then((json) => {
             setSpan(json.top_spans);
-        });
-
+          });
       });
   };
 
   //summarise
+  const [activeSummary, setActiveSummary] = useState(null);
 
   const [summarise, setSummarise] = useState(null);
   let data = { text: "text to summarise" };
@@ -126,31 +125,41 @@ export default function Podcast() {
       </div>
       <div className="mx-36">
         <p className="font-bold">Query recommend : </p>
-      {queryRecommend && queryRecommend.queries.map((item)=>(
-        <p className="text-yellow-600">{item}</p>
-      ))}
-
+        {queryRecommend &&
+          queryRecommend.queries.map((item) => (
+            <p className="text-yellow-600">{item}</p>
+          ))}
       </div>
 
       <div className="mx-36">
         <p className="font-bold">Top span : </p>
-      {span && span.map((item)=>(
-        <p className="text-yellow-600">{item}</p>
-      ))}
-
+        {span && span.map((item) => <p className="text-yellow-600">{item}</p>)}
       </div>
-      <div className="w-1/2 mx-auto border border-gray-600 rounded-lg p-4">
+      {/* <div className="w-1/2 mx-auto border border-gray-600 rounded-lg p-4">
         {summarise && <p>{summarise.summary}</p>}
-        </div>
+        </div> */}
 
       <ul className="px-36 m-4">
         {segment &&
           segment.top_segments.map(([segment]) => (
-            <div className="flex justify-between my-2">
+            <div className=" justify-between my-2">
               <div className="font-bold text-2xl" key={segment}>
                 {segment}
               </div>
-              <button onClick={()=> handleSummarise(segment)} className="h-12 opacity-50 border-2 border-gray-600 hover:bg-slate-700">
+              <div
+                className={`mt-4 w-1/2 mx-auto border border-gray-600 rounded-lg p-4 ${
+                  activeSummary === segment ? "block" : "hidden"
+                }`}
+              >
+                {summarise && <p>{summarise.summary}</p>}
+              </div>
+              <button
+                onClick={() => {
+                  handleSummarise(segment);
+                  setActiveSummary(segment);
+                }}
+                className="h-12 opacity-50 border-2 border-gray-600 hover:bg-slate-700"
+              >
                 Summarice
               </button>
             </div>
@@ -161,10 +170,11 @@ export default function Podcast() {
         {podcast &&
           podcast.podcast.map((item, index) => (
             <li className="text-lg" key={index}>
-              {item}
+              <p >{item}</p>
             </li>
           ))}
       </ul>
     </div>
   );
 }
+
