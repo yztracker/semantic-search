@@ -54,7 +54,7 @@ export default function Podcast() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(requestSpan),
+          body: JSON.stringify( ),
         })
           .then((response) => response.json())
           .then((json) => {
@@ -87,6 +87,16 @@ export default function Podcast() {
         console.error("Error:", error);
       });
   };
+
+  // highlight
+  const highlight = (segment) => {
+    let highlightedText = segment;
+    span.forEach((text) => {
+        highlightedText = highlightedText.replace(new RegExp(text, "gi"), "<span class='highlighted'>" + text + "</span>");
+    });
+    return highlightedText;
+};
+
   return (
     <div>
       <div className="flex justify-center m-4">
@@ -127,25 +137,26 @@ export default function Podcast() {
         <p className="font-bold">Query recommend : </p>
         {queryRecommend &&
           queryRecommend.queries.map((item) => (
-            <p className="text-yellow-600">{item}</p>
+            <p className="text-green-700">{item}</p>
           ))}
       </div>
 
       <div className="mx-36">
         <p className="font-bold">Top span : </p>
-        {span && span.map((item) => <p className="text-yellow-600">{item}</p>)}
+        {span && span.map((item) => <p className="text-gray-600">{item}</p>)}
       </div>
+      
       {/* <div className="w-1/2 mx-auto border border-gray-600 rounded-lg p-4">
         {summarise && <p>{summarise.summary}</p>}
         </div> */}
 
       <ul className="px-36 m-4">
         {segment &&
-          segment.top_segments.map(([segment]) => (
-            <div className=" justify-between my-2">
-              <div className="font-bold text-2xl" key={segment}>
+          segment.top_segments.map(([segment],i) => (
+            <div className=" justify-between my-2" key={i}>
+        <div className={`font-bold text-2xl ${span.some(item => segment.includes(item)) ? "text-yellow-600" : ""}`}>
                 {segment}
-              </div>
+            </div>
               <div
                 className={`mt-4 w-1/2 mx-auto border border-gray-600 rounded-lg p-4 ${
                   activeSummary === segment ? "block" : "hidden"
