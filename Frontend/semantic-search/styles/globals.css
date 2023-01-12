@@ -117,3 +117,7 @@ a {
 .podcast p {
   color:#20202080
 }
+
+.highlighted {
+  background-color: yellow;
+}
